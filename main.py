@@ -10,6 +10,7 @@ class User:
         self.location = location
         self.posts = posts
         self.coordinates = self.get_coordinates()
+        self.marker = map_vidget.set_marker(self.coordinates[0], self.coordinates[1])
 
 
     def get_coordinates(self)->list:
@@ -35,7 +36,7 @@ def add_user():
     miejscowosc = entry_location.get()
     tmp_user = (User(name=imie, surname=nazwisko, location=miejscowosc, posts=posty))
     users.append(tmp_user)
-    map_vidget.set_marker(tmp_user.coordinates[0], tmp_user.coordinates[1], text=tmp_user.location)
+
 
 
     print(users)
@@ -55,6 +56,7 @@ def show_users():
 
 def remove_user():
     idx=listbox_lista_obiektów.index(ACTIVE)
+    users[idx].marker.delete()
     users.pop(idx)
     show_users()
 
@@ -64,6 +66,8 @@ def user_details():
     label_surname_szczegóły_obiektu_wartość.configure(text=users[idx].surname)
     label_post_szczegóły_obiektu_wartość.configure(text=users[idx].posts)
     label_location_szczegóły_obiektu_wartość.configure(text=users[idx].location)
+    map_vidget.set_position(users[idx].coordinates[0], users[idx].coordinates[1])
+    map_vidget.set_zoom(17)
 
 
 def edit_user():
@@ -81,10 +85,18 @@ def update_users(idx):
     surname=entry_surname.get()
     posts=entry_post.get()
     location=entry_location.get()
+
+
     users[idx].name = name
     users[idx].surname = surname
     users[idx].posts = posts
     users[idx].location = location
+
+    users[idx].marker.delete()
+
+
+    users[idx].coordinates = users[idx].get_coordinates()
+    users[idx].marker = map_vidget.set_marker(users[idx].coordinates[0],users[idx].coordinates[1])
 
     button_dodaj_obiekt.configure(text='Dodaj obiekt', command=add_user)
 
